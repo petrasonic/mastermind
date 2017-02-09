@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" ng-app="mastermindApp">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Mastermind</title>
+  <meta name="description" content="Mastermind (Code Breaker)">
+  <meta name="author" content="David Petrasovic">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide|Orbitron">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/chardinjs.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div class="container">
+
+    <div ng-controller="MastermindController as VM" class="text-center body">
+      <h1 class="text-center">Mastermind</h1>
+      <div class="board-container">
+        <table class="board" data-intro="Try to guess the hidden pattern in under 10 tries" data-position="left">
+          <tr ng-if="VM.endGame===true">
+            <td>&nbsp;</td>
+            <td ng-repeat="colour in VM.code track by $index" class="open-hood-cell">
+              <div class="circle" ng-class="colour"></div>
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr ng-if="VM.endGame===false" class="closed-hood">
+            <td>&nbsp;</td>
+            <td ng-repeat="space in VM.board[0] track by $index">?</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr ng-repeat="row in VM.board track by $index">
+            <td>{{$index+1}}</td>
+            <td ng-repeat="cell in row track by $index" class="peg-cell">
+              <div class="circle" ng-class="cell" ng-if="cell"></div>
+            </td>
+            <td class="results-cell">
+              <div class="small-circle" ng-repeat="result in VM.results[$index] track by $index" ng-class="result" ng-if="result"></div>
+            </td>
+            <td><button type="button" name="check" class="btn btn-default btn-xs" ng-click="VM.check()" ng-if="VM.turn===$index" ng-disabled="VM.checkDisabled()" data-intro="Check this row once you have selected pegs" data-position="right">Check</button>{{VM.checkEnabled()}}</td>
+          </tr>
+        </table>
+
+        <div class="selection-area" data-intro="Select pegs by clicking on them" data-position="left">
+          <div ng-repeat="colour in VM.colours" class="circle" ng-class="colour" ng-click="VM.selectColour(colour)"></div>
+          <button type="button" name="clear" class="btn btn-default btn-xs btn-block" ng-click="VM.clearRow()" ng-disabled="VM.endGame===true">Clear Current Row</button>
+        </div>
+
+      </div><!-- board-container -->
+
+      <div class="well center-block">
+        <button type="button" name="newGame" class="btn btn-primary btn-block" ng-click="VM.newGame()">New Game</button>
+        <button type="button" name="clear" class="btn btn-success btn-block" ng-click="VM.startPlaySelf()" ng-disabled="VM.turn!==0" data-intro="Have the computer think for you 🤖" data-position="left">Play Self</button>
+        <button type="button" name="clear" class="btn btn-default btn-block" ng-click="VM.help()">Help</button>
+      </div>
+
+      <div class="mini-modal" ng-if="VM.showEndGameModal">
+        <div class="close-btn" ng-click="VM.closeModal()">&times;</div>
+        <h3>{{VM.endGameTitle}}</h3>
+        <p>{{VM.endGameContent}}</p>
+      </div>
+
+    </div>
+    <footer>&copy; David Petrasovic</footer>
+  </div><!-- container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+  <script src="js/underscore.js"></script>
+  <script src="js/combinatorics.js"></script>
+  <script src="http://code.jquery.com/jquery-latest.js"></script><!-- chardin dependency-->
+  <script src="js/chardinjs.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
